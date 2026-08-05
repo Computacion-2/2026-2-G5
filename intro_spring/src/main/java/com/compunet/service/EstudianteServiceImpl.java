@@ -1,0 +1,28 @@
+package com.compunet.service;
+
+import java.util.List;
+
+import com.compunet.model.Estudiante;
+import com.compunet.repository.EstudianteRepository;
+
+public class EstudianteServiceImpl implements EstudianteService {
+
+    private EstudianteRepository estudianteRepository;
+
+    public EstudianteServiceImpl (EstudianteRepository repository){
+
+        this.estudianteRepository = repository;
+    }
+
+    @Override
+    public List<Estudiante> listarEstudiantes() {
+        return estudianteRepository.obtenerTodos();
+    }
+
+    @Override
+    public void registrarEstudiante(Estudiante estudiante) {
+
+        estudianteRepository.registrarEstudiante(estudiante);
+    }
+    
+}

@@ -1,98 +1,73 @@
-# Servidor Web Multihilos
+# Intro Spring
 
-Este proyecto contiene dos versiones de un servidor web multihilos:
+Proyecto Java Maven con Spring que ejecuta una aplicación de consola a través de `Main.java`.
 
-- Parte 1: recibe la solicitud HTTP y muestra los headers.
-- Parte 2: además intenta servir archivos estáticos desde el directorio de trabajo actual.
+## Contexto de la aplicación
+
+Este proyecto es una introducción a Spring y a la inyección de dependencias usando configuración XML.
+La implementación muestra cómo Spring arma los objetos y sus dependencias mediante:
+
+- inyección por constructor
+- inyección por setter
+
+La configuración se define en `intro_spring/src/main/resources/applicationContext.xml` y Spring crea los beans necesarios para la aplicación.
 
 ## Requisitos
 
-- Tener instalado el JDK (Java Development Kit).
-- Abrir la terminal desde la raíz del proyecto.
+- Java 17 instalado
+- Maven instalado
 
-## Estructura del proyecto
+## Estructura relevante
 
-- [Parte1/](Parte1/): código de la Parte 1.
-- [Parte2/](Parte2/): código de la Parte 2 y el archivo de ejemplo [Parte2/test.html](Parte2/test.html).
+- `intro_spring/pom.xml` - archivo de compilación Maven
+- `intro_spring/src/main/java/com/compunet/Main.java` - clase `main`
+- `intro_spring/src/main/resources/applicationContext.xml` - configuración Spring XML
 
-## 1. Compilar y ejecutar la Parte 1
+## Estructura por capas
 
-Desde la raíz del proyecto, compila:
+La aplicación está organizada en capas clásicas de un proyecto Spring simple:
 
-```bash
-javac -d out Parte1/ServidorWebMultihilosParte1.java
-```
+- `model` - entidades del dominio (`Estudiante`)
+- `repository` - acceso a datos e implementación en memoria
+- `service` - lógica de negocio y definición de servicios
+- `Main` - punto de entrada que carga el contexto Spring y usa los servicios
 
-Luego ejecuta:
+Esta arquitectura permite separar responsabilidades y mostrar cómo Spring inyecta dependencias en cada capa.
 
-```bash
-java -cp out Parte1.ServidorWebMultihilosParte1
-```
+## Compilar el proyecto
 
-El servidor quedará escuchando en el puerto 6789.
-
-Para probarlo, abre en el navegador:
-
-```text
-http://localhost:6789/
-```
-
-O con curl:
+Desde la carpeta `intro_spring` del repositorio:
 
 ```bash
-curl http://localhost:6789/
+cd intro_spring
+mvn clean package
 ```
 
-## 2. Compilar y ejecutar la Parte 2
+Este comando compila el código y genera el artefacto `intro_spring.war` en `intro_spring/target/`.
 
-Desde la raíz del proyecto, compila:
+## Ejecutar el `Main` directamente con Maven
+
+Desde la carpeta `intro_spring`:
 
 ```bash
-javac -d out Parte2/ServidorWebMultihilosParte2.java
+cd intro_spring
+mvn compile exec:java -Dexec.mainClass="com.compunet.Main"
 ```
 
-Luego ejecuta:
+> Nota: la clase principal está definida en el paquete `com.compunet` y se encuentra en `src/main/java/com/compunet/Main.java`.
+
+## Ejecución alternativa usando la carpeta de clases compiladas
+
+Después de compilar, también puede ejecutar la clase directamente con Java:
 
 ```bash
-java -cp out Parte2.ServidorWebMultihilosParte2
+cd intro_spring
+mvn compile
+java -cp target/classes;target/dependency/* com.compunet.Main
 ```
 
-El servidor también escuchará en el puerto 6789.
+> Si necesita dependencias externas en el classpath, use `mvn dependency:copy-dependencies` antes de ejecutar con `java`.
 
-Para probar un archivo estático, usa la siguiente URL desde la raíz del proyecto:
+## Observaciones
 
-```text
-http://localhost:6789/Parte2/test.html
-```
-
-También puedes probarlo con:
-
-```bash
-curl http://localhost:6789/Parte2/test.html
-```
-
-## Compilar ambas partes en una sola vez
-
-Si deseas compilar ambas versiones de forma rápida desde la raíz del proyecto:
-
-```bash
-javac -d out Parte1/ServidorWebMultihilosParte1.java Parte2/ServidorWebMultihilosParte2.java
-```
-
-Luego puedes ejecutar cada una por separado:
-
-```bash
-java -cp out Parte1.ServidorWebMultihilosParte1
-```
-
-```bash
-java -cp out Parte2.ServidorWebMultihilosParte2
-```
-
-## Detener el servidor
-
-Para detenerlo, presiona:
-
-```text
-Ctrl + C
-```
+El `Main` carga el contexto Spring desde `applicationContext.xml` y obtiene un bean `estudianteServiceSetterBean` para listar estudiantes.
