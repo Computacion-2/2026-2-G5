@@ -5,7 +5,10 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- bean definitions here -->
-    <bean id="estudianteRepositoryBean" class="com.compunet.repository.EstudianteRepositoryInMemory"/>
+    <bean id="estudianteRepositoryBean" 
+        class="com.compunet.repository.EstudianteRepositoryInMemory"
+        init-method="metodoInicial"
+        destroy-method="metodoFinal"/>
 
     <bean id="estudianteServiceBean" class="com.compunet.service.EstudianteServiceImpl">
         <constructor-arg ref="estudianteRepositoryBean"/>
@@ -14,5 +17,9 @@
     <bean id="estudianteServiceSetterBean" class="com.compunet.service.EstudianteServiceSetterImpl" >
         <property name="estudianteRepository" ref="estudianteRepositoryBean"/> 
     </bean>
+
+    <!-- Bean con scope -->
+
+    <bean id="matriculaBean" class="com.compunet.model.Matricula" scope="prototype"/>
 
 </beans>
