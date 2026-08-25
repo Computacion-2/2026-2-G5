@@ -16,10 +16,10 @@ public class EstudianteServiceSetterImpl implements EstudianteService {
     public void setEstudianteRepository(EstudianteRepository repository){
         this.estudianteRepository = repository;
     }
-    
 
     @Override
     public List<Estudiante> listarEstudiantes() {
+        System.out.println("Soy el Bean de inyección por setter");
         return estudianteRepository.obtenerTodos();
     }
 

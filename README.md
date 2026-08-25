@@ -1,18 +1,21 @@
 # Intro Spring
 
-Proyecto Java Maven que sirve como introducción a Spring y a la inyección de dependencias con configuración XML.
+Proyecto Java Maven que sirve como introducción a Spring y a la inyección de dependencias mediante anotaciones.
 
 ## Contexto de la aplicación
 
-Esta aplicación demuestra cómo Spring administra beans y dependencias usando un archivo XML.
+Esta aplicación demuestra cómo Spring administra beans y dependencias usando configuración basada en anotaciones. La clase `AppConfig.java`, marcada con `@Configuration`, es el punto central del contexto de Spring.
 El proyecto integra:
 
 - inyección por constructor (`EstudianteServiceImpl`)
 - inyección por setter (`EstudianteServiceSetterImpl`)
+- detección automática de componentes mediante `@ComponentScan("com.compunet")`
+- definición explícita de beans mediante `@Bean` en `AppConfig.java`
+- inyección de dependencias mediante `@Autowired` y parámetros de métodos `@Bean`
 - configuración global de Spring para aplicaciones web mediante `web.xml` y `ContextLoaderListener`
 - uso de `WebApplicationContext` dentro de un servlet (`EstudianteServlet`)
-- control de scope de beans desde `applicationContext.xml` (`prototype` en `matriculaBean`)
-- ciclo de vida de beans con métodos `init-method` y `destroy-method` en `EstudianteRepositoryInMemory`
+- control de scope de beans mediante anotaciones (`@Scope("prototype")` en `Matricula`)
+- ciclo de vida de beans con anotaciones en `EstudianteRepositoryInMemory`
 - una entidad adicional `Matricula` que muestra un bean de alcance `prototype`
 
 ## Requisitos
@@ -25,7 +28,7 @@ El proyecto integra:
 
 - `intro_spring/pom.xml` - archivo de compilación Maven
 - `intro_spring/src/main/java/com/compunet/Main.java` - punto de entrada de consola
-- `intro_spring/src/main/resources/applicationContext.xml` - definición de beans y scopes
+- `intro_spring/src/main/java/com/compunet/config/AppConfig.java` - configuración de Spring, escaneo de componentes y definición de beans
 - `intro_spring/src/main/webapp/WEB-INF/web.xml` - configuración global de Spring para la aplicación web
 - `intro_spring/src/main/java/com/compunet/servlets/EstudianteServlet.java` - servlet que usa `WebApplicationContext`
 
@@ -37,17 +40,19 @@ La implementación sigue una arquitectura por capas sencilla:
 - `repository` - acceso a datos en memoria (`EstudianteRepositoryInMemory`)
 - `service` - lógica del negocio y contratos (`EstudianteService`, `EstudianteServiceImpl`, `EstudianteServiceSetterImpl`)
 - `servlets` - capa web que consume los servicios con Spring
-- `Main` - prueba de consola que carga el contexto Spring desde XML
+- `Main` - prueba de consola que carga el contexto Spring desde `AppConfig.java`
 
 Esta separación facilita mostrar cómo Spring inyecta dependencias entre capas y cómo se usan distintas estrategias de wiring.
 
-## Beans y ciclo de vida
+## Beans, inyección y ciclo de vida
 
-- `estudianteRepositoryBean` usa la clase `com.compunet.repository.EstudianteRepositoryInMemory`.
-- Se configuran `init-method="metodoInicial"` y `destroy-method="metodoFinal"` para evidenciar el ciclo de vida del bean.
-- `estudianteServiceBean` se construye con inyección por constructor.
-- `estudianteServiceSetterBean` recibe la dependencia por setter.
-- `matriculaBean` está configurado como `scope="prototype"` para crear instancias nuevas en cada petición.
+- `EstudianteRepositoryInMemory` se registra como componente mediante `@Repository` y sus métodos de ciclo de vida se indican con `@PostConstruct` y `@PreDestroy`.
+- `EstudianteServiceImpl` se registra mediante `@Service` y recibe `EstudianteRepository` por inyección de constructor con `@Autowired`.
+- `EstudianteServiceSetterImpl` se crea desde el método `@Bean estudianteServiceSetterImpl` de `AppConfig.java`, que recibe el repositorio y lo inyecta mediante setter.
+- `nombreAplicacion` es un bean definido explícitamente con `@Bean` en `AppConfig.java`.
+- `Matricula` usa `@Scope("prototype")` para crear una instancia nueva cada vez que se solicita.
+
+Spring descubre automáticamente los componentes del paquete `com.compunet` gracias a `@ComponentScan`. Los beans que requieren una configuración específica se declaran con métodos `@Bean` dentro de `AppConfig.java`; de esta forma, ya no es necesario definirlos manualmente en un archivo XML.
 
 ## Compilar el proyecto
 
@@ -62,14 +67,14 @@ Este comando compila el proyecto y genera el WAR `intro_spring.war` en `intro_sp
 
 ## Ejecutar el `Main` directamente con Maven
 
-Para ejecutar el ejemplo de consola que carga Spring desde XML:
+Para ejecutar el ejemplo de consola que carga Spring desde la configuración basada en anotaciones:
 
 ```bash
 cd intro_spring
 mvn compile exec:java -Dexec.mainClass="com.compunet.Main"
 ```
 
-> El `Main` carga `applicationContext.xml` y obtiene `estudianteServiceSetterBean` para listar estudiantes.
+> El `Main` carga `AppConfig.class` mediante `AnnotationConfigApplicationContext` y obtiene los beans registrados para listar estudiantes.
 
 ## Ejecutar la aplicación web
 
@@ -90,6 +95,6 @@ java -cp target/classes;target/dependency/* com.compunet.Main
 
 ## Observaciones
 
-- Este proyecto es útil para entender cómo Spring carga beans desde XML, maneja scope y ciclo de vida, y habilita una aplicación web con servlet.
+- Este proyecto es útil para entender cómo Spring descubre y configura beans mediante anotaciones, maneja scope y ciclo de vida, y habilita una aplicación web con servlet.
 - El servicio web `EstudianteServlet` demuestra la integración entre Spring y la capa HTTP.
 - `Matricula` es un ejemplo de bean `prototype` y se instancia cada vez que se solicita.

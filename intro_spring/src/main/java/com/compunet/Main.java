@@ -2,20 +2,29 @@ package com.compunet;
 
 import java.util.List;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.compunet.config.AppConfig;
 import com.compunet.model.Estudiante;
 import com.compunet.service.EstudianteService;
+import com.compunet.service.EstudianteServiceSetterImpl;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         
-        EstudianteService estudianteService = (EstudianteService) context.getBean("estudianteServiceSetterBean");
+
+        String nombreApp = (String) context.getBean("nombreAplicacion");
+        EstudianteServiceSetterImpl service = (EstudianteServiceSetterImpl) context.getBean("estudianteServiceSetterImpl");
+
+        EstudianteService estudianteService = context.getBean("estudianteServiceImpl", EstudianteService.class);
         
+        List<Estudiante> test = service.listarEstudiantes();
         List<Estudiante> estudiantes = estudianteService.listarEstudiantes();
+
+        System.out.println("Nombre de mi aplicativo: " + nombreApp);
 
         for (Estudiante estudiante : estudiantes) {
 
