@@ -30,7 +30,9 @@ public class EstudianteServlet extends HttpServlet {
                 .getRequiredWebApplicationContext(
                         getServletContext());
 
-        this.estudianteService = (EstudianteService) context.getBean("estudianteServiceBean");
+        this.estudianteService = context.getBean(EstudianteService.class);
+
+
     }
 
     @Override

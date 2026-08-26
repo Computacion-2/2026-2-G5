@@ -3,12 +3,14 @@ package com.compunet.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import com.compunet.repository.EstudianteRepository;
 import com.compunet.service.EstudianteServiceSetterImpl;
 
 @Configuration
 @ComponentScan("com.compunet")
+@PropertySource("classpath:application.properties")
 public class AppConfig {
 
     @Bean
