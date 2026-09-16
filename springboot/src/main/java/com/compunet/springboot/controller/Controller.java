@@ -13,12 +13,15 @@ import com.compunet.springboot.model.EstudianteCurso;
 import com.compunet.springboot.model.Permiso;
 import com.compunet.springboot.model.Profesor;
 import com.compunet.springboot.model.Usuario;
+import com.compunet.springboot.repository.ProfesorRepository;
 import com.compunet.springboot.service.CursoService;
 import com.compunet.springboot.service.EstudianteService;
 import com.compunet.springboot.service.MatriculaService;
 import com.compunet.springboot.service.PermisoService;
 import com.compunet.springboot.service.ProfesorService;
 import com.compunet.springboot.service.UsuarioService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 public class Controller {
@@ -29,6 +32,7 @@ public class Controller {
     private final EstudianteService estudianteService;
     private final MatriculaService matriculaService;
     private final PermisoService permisoService;
+    private final ProfesorRepository profeRepo;
 
     @Autowired
     public Controller(UsuarioService userService,
@@ -36,13 +40,15 @@ public class Controller {
                       CursoService cursoService,
                       EstudianteService estudianteService,
                       MatriculaService matriculaService,
-                      PermisoService permisoService) {
+                      PermisoService permisoService,
+                      ProfesorRepository profeRepo) {
         this.userService = userService;
         this.profesorService = profesorService;
         this.cursoService = cursoService;
         this.estudianteService = estudianteService;
         this.matriculaService = matriculaService;
         this.permisoService = permisoService;
+        this.profeRepo = profeRepo;
     }
 
     @GetMapping("/")
@@ -286,5 +292,11 @@ public class Controller {
         return estudianteService.estudiantesActivosPorCursoNative(1L);
     }
 
+    //Ejercicio 1. preparcial.
+    @GetMapping("/ejercicio/pre1")
+    public List<Profesor> ejercicioPre1() {
+        return profeRepo.findDistinctByActiveTrueAndDepartamentoIgnoreCaseAndCursos_CreditosGreaterThanEqualOrderByApellidoAscNombreAsc("Computación y sistemas inteligentes", 3);
+    }
+    
 }
 

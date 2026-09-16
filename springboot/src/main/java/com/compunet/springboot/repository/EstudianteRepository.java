@@ -19,7 +19,9 @@ public interface EstudianteRepository extends JpaRepository<Estudiante, Long> {
     Long countByActiveTrue();
 
     // Ejercicio 15 (JPQL): Obtener estudiantes activos matriculados en un curso, ordenados por apellido ascendente
-    @Query("SELECT e FROM Estudiante e JOIN e.estudianteCursos ec WHERE ec.curso.id = :cursoId AND e.active = true ORDER BY e.apellido ASC")
+    @Query("SELECT e FROM Estudiante e " + 
+           "JOIN e.estudianteCursos ec " + 
+           "WHERE ec.curso.id = :cursoId AND e.active = true ORDER BY e.apellido ASC")
     List<Estudiante> findActivosByCursoIdJPQL(@Param("cursoId") Long cursoId);
 
     // Ejercicio 15 (Native SQL): Obtener estudiantes activos matriculados en un curso, ordenados por apellido ascendente

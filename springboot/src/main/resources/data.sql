@@ -8,7 +8,7 @@ INSERT INTO Estudiante (nombre, apellido, correo_institucional, active) VALUES (
 INSERT INTO Estudiante (nombre, apellido, correo_institucional, active) VALUES ('Catalina','Marquez','cMarquez@icesi.edu.co', TRUE);
 
 INSERT INTO Curso (nombre, creditos, departamento, profesor_id) VALUES ('Computacion en internet 2', 3, 'Computación y sistemas inteligentes', 3);
-INSERT INTO Curso (nombre, creditos, departamento, profesor_id) VALUES ('Ingesoft 4', 3, 'Computación y sistemas inteligentes', 2);
+INSERT INTO Curso (nombre, creditos, departamento, profesor_id) VALUES ('Ingesoft 4', 2, 'Computación y sistemas inteligentes', 2);
 INSERT INTO Curso (nombre, creditos, departamento, profesor_id) VALUES ('Desarrollo de aplicaciones moviles', 3, 'Computación y sistemas inteligentes', 1);
 
 INSERT INTO estudiante_curso (estudiante_id, curso_id) VALUES (1,1);
