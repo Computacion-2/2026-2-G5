@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 import com.compunet.springboot.model.Usuario;
 import com.compunet.springboot.repository.UsuarioRepository;
 
-// import lombok.RequiredArgsConstructor;
-
 @Service
-// @RequiredArgsConstructor Anotacion que me genera el constructor automaticamente.
 public class UsuarioService {
   
     private final UsuarioRepository usuarioRepository;
@@ -26,11 +23,19 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
+    // Ejercicio 1: Buscar usuario por su correoInstitucional exacto
     public Optional<Usuario> porCorreoInstitucional(String correo) {
         return usuarioRepository.findByCorreoInstitucional(correo);
     }
 
+    // Ejercicio 2: Comprobar si ya existe un usuario con un correoInstitucional determinado
     public boolean existePorCorreoInstitucional(String correo) {
         return usuarioRepository.existsByCorreoInstitucional(correo);
     }
+
+    // Ejercicio 11: Obtener usuarios activos con un rol determinado (sin distinguir mayúsculas)
+    public List<Usuario> usuariosActivosPorRol(String nombreRol) {
+        return usuarioRepository.findByActiveTrueAndRoles_NombreIgnoreCase(nombreRol);
+    }
 }
+

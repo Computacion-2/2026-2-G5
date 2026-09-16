@@ -37,7 +37,7 @@ public class Profesor {
     private String name;
 
     @Column (name = "apellido", nullable = false)
-    private String Apellido;
+    private String apellido;
 
     @Column (name = "correo_institucional", nullable = false, unique = true, length = 120)
     private String correoInstitucional;

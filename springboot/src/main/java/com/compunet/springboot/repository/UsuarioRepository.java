@@ -1,5 +1,6 @@
 package com.compunet.springboot.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,9 +11,14 @@ import com.compunet.springboot.model.Usuario;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
-    public Optional<Usuario> findByCorreoInstitucional(String correo);
+    // Ejercicio 1: Buscar usuario por su correoInstitucional exacto
+    Optional<Usuario> findByCorreoInstitucional(String correoInstitucional);
 
-    public boolean existsByCorreoInstitucional(String correo);
+    // Ejercicio 2: Comprobar si ya existe un usuario con un correoInstitucional determinado
+    boolean existsByCorreoInstitucional(String correoInstitucional);
 
-    
+    // Ejercicio 11: Obtener todos los usuarios activos (active = true) que tengan asignado un rol con un nombre dado, sin distinguir mayúsculas
+    List<Usuario> findByActiveTrueAndRoles_NombreIgnoreCase(String nombreRol);
+
 }
+
