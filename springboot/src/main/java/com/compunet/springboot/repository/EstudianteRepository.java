@@ -28,4 +28,10 @@ public interface EstudianteRepository extends JpaRepository<Estudiante, Long> {
     @Query(value = "SELECT e.* FROM Estudiante e INNER JOIN estudiante_curso ec ON e.id = ec.estudiante_id WHERE ec.curso_id = :cursoId AND e.active = true ORDER BY e.apellido ASC", nativeQuery = true)
     List<Estudiante> findActivosByCursoIdNative(@Param("cursoId") Long cursoId);
 
+    // Ejercicio 2 preparcial: Búsqueda de estudiantes por especialidad docente y dominio institucional
+    List<Estudiante> findDistinctByActiveTrueAndCorreoInstitucionalEndingWithIgnoreCaseAndEstudianteCursos_Curso_Profesor_EspecialidadIgnoreCaseOrderByApellidoAscNameAsc(
+        String dominioCorreo,
+        String especialidad
+    );
+
 }

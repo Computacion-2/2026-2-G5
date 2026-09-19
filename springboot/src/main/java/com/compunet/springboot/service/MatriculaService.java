@@ -24,5 +24,15 @@ public class MatriculaService {
         return repository.existsByEstudiante_IdAndCurso_Id(estudianteId, cursoId);
     }
 
+    // Ejercicio 3 preparcial - Parte A: Verificar si existe estudiante activo con profesor y departamento
+    public boolean existeEstudianteActivoEnCursoProfesorYDepartamento(String departamentoCurso, Long profesorId) {
+        return repository.existsByEstudiante_ActiveTrueAndCurso_DepartamentoIgnoreCaseAndCurso_Profesor_Id(departamentoCurso, profesorId);
+    }
+
+    // Ejercicio 3 preparcial - Parte B: Contar total de matrículas por subcadena de nombre y rango de créditos
+    public long contarMatriculasPorNombreCursoYCreditos(String subcadenaNombre, int minCreditos, int maxCreditos) {
+        return repository.countByCurso_NombreIgnoreCaseContainingAndCurso_CreditosBetween(subcadenaNombre, minCreditos, maxCreditos);
+    }
+
 }
 

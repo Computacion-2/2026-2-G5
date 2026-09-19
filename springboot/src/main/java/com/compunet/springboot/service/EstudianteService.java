@@ -39,4 +39,9 @@ public class EstudianteService {
         return estudianteRepo.findActivosByCursoIdNative(cursoId);
     }
 
+    // Ejercicio 2 preparcial: Estudiantes activos por dominio y especialidad docente
+    public List<Estudiante> estudiantesActivosPorDominioYEspecialidadProfesor(String dominioCorreo, String especialidad) {
+        return estudianteRepo.findDistinctByActiveTrueAndCorreoInstitucionalEndingWithIgnoreCaseAndEstudianteCursos_Curso_Profesor_EspecialidadIgnoreCaseOrderByApellidoAscNameAsc(dominioCorreo, especialidad);
+    }
+
 }

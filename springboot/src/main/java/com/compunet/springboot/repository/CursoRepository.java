@@ -1,5 +1,6 @@
 package com.compunet.springboot.repository;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,6 +25,13 @@ public interface CursoRepository extends JpaRepository<Curso, Long> {
 
     // Ejercicio 13: Obtener los cursos con créditos mayores o iguales a un valor mínimo, ordenados por créditos de mayor a menor
     List<Curso> findByCreditosGreaterThanEqualOrderByCreditosDesc(int creditosMinimos);
+
+    // Ejercicio 4 preparcial: Top 5 cursos con mayor cantidad de créditos por lista de departamentos, apellido de profesor y lista de IDs de estudiantes
+    List<Curso> findTop5ByDepartamentoInAndProfesor_ApellidoIgnoreCaseAndEstudianteCursos_Estudiante_IdInOrderByCreditosDesc(
+        Collection<String> departamentos,
+        String apellidoProfesor,
+        Collection<Long> estudiantesIds
+    );
 
 }
 

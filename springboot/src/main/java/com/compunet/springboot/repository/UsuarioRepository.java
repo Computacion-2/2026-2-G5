@@ -1,5 +1,6 @@
 package com.compunet.springboot.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,12 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     // Ejercicio 11: Obtener todos los usuarios activos (active = true) que tengan asignado un rol con un nombre dado, sin distinguir mayúsculas
     List<Usuario> findByActiveTrueAndRoles_NombreIgnoreCase(String nombreRol);
+
+    // Ejercicio 5 preparcial: Usuarios activos con al menos un rol de la lista y que tengan un permiso específico
+    List<Usuario> findDistinctByActiveTrueAndRoles_NombreInAndRoles_Permisos_NombreIgnoreCaseOrderByApellidoAscNombreAsc(
+        Collection<String> nombresRoles,
+        String nombrePermiso
+    );
 
 }
 

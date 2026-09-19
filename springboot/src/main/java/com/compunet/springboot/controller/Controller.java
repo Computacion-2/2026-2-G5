@@ -13,7 +13,6 @@ import com.compunet.springboot.model.EstudianteCurso;
 import com.compunet.springboot.model.Permiso;
 import com.compunet.springboot.model.Profesor;
 import com.compunet.springboot.model.Usuario;
-import com.compunet.springboot.repository.ProfesorRepository;
 import com.compunet.springboot.service.CursoService;
 import com.compunet.springboot.service.EstudianteService;
 import com.compunet.springboot.service.MatriculaService;
@@ -32,7 +31,6 @@ public class Controller {
     private final EstudianteService estudianteService;
     private final MatriculaService matriculaService;
     private final PermisoService permisoService;
-    private final ProfesorRepository profeRepo;
 
     @Autowired
     public Controller(UsuarioService userService,
@@ -40,15 +38,13 @@ public class Controller {
                       CursoService cursoService,
                       EstudianteService estudianteService,
                       MatriculaService matriculaService,
-                      PermisoService permisoService,
-                      ProfesorRepository profeRepo) {
+                      PermisoService permisoService) {
         this.userService = userService;
         this.profesorService = profesorService;
         this.cursoService = cursoService;
         this.estudianteService = estudianteService;
         this.matriculaService = matriculaService;
         this.permisoService = permisoService;
-        this.profeRepo = profeRepo;
     }
 
     @GetMapping("/")
@@ -292,11 +288,49 @@ public class Controller {
         return estudianteService.estudiantesActivosPorCursoNative(1L);
     }
 
-    //Ejercicio 1. preparcial.
+    // ==========================================
+    // Ejercicios Preparcial Query Methods
+    // ==========================================
+
+    // Ejercicio 1 preparcial: Reporte docente por créditos dictados y departamento
     @GetMapping("/ejercicio/pre1")
     public List<Profesor> ejercicioPre1() {
-        return profeRepo.findDistinctByActiveTrueAndDepartamentoIgnoreCaseAndCursos_CreditosGreaterThanEqualOrderByApellidoAscNombreAsc("Computación y sistemas inteligentes", 3);
+        return profesorService.profesoresActivosPorDepartamentoYCreditosMinimos("Computación y sistemas inteligentes", 3);
     }
-    
+
+    // Ejercicio 2 preparcial: Búsqueda de estudiantes por especialidad docente y dominio institucional
+    @GetMapping("/ejercicio/pre2")
+    public List<Estudiante> ejercicioPre2() {
+        return estudianteService.estudiantesActivosPorDominioYEspecialidadProfesor("@icesi.edu.co", "Telematica");
+    }
+
+    // Ejercicio 3 preparcial: Validación y métricas sobre la entidad intermedia (EstudianteCurso)
+    // Parte A (Validación booleana):
+    @GetMapping("/ejercicio/pre3a")
+    public boolean ejercicioPre3A() {
+        return matriculaService.existeEstudianteActivoEnCursoProfesorYDepartamento("Computación y sistemas inteligentes", 1L);
+    }
+
+    // Parte B (Métricas cuantitativas):
+    @GetMapping("/ejercicio/pre3b")
+    public long ejercicioPre3B() {
+        return matriculaService.contarMatriculasPorNombreCursoYCreditos("internet", 2, 4);
+    }
+
+    // Ejercicio 4 preparcial: Limitación Top 5, colecciones In y navegación inversa
+    @GetMapping("/ejercicio/pre4")
+    public List<Curso> ejercicioPre4() {
+        List<String> departamentos = List.of("Computación y sistemas inteligentes");
+        List<Long> estudiantesIds = List.of(1L, 2L, 3L);
+        return cursoService.top5CursosPorDepartamentosProfesorYEstudiantes(departamentos, "Rincon", estudiantesIds);
+    }
+
+    // Ejercicio 5 preparcial: Navegación profunda ManyToMany en cadena (Usuario -> Rol -> Permiso)
+    @GetMapping("/ejercicio/pre5")
+    public List<Usuario> ejercicioPre5() {
+        List<String> roles = List.of("ADMIN", "DOCENTE");
+        return userService.usuariosActivosPorRolesYPermiso(roles, "USER_READ");
+    }
+
 }
 

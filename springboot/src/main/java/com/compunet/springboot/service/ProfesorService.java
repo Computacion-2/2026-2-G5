@@ -33,5 +33,10 @@ public class ProfesorService {
         return profeRepo.findByEspecialidadIgnoreCaseOrderByApellidoAsc(especialidad);
     }
 
+    // Ejercicio 1 preparcial: Reporte docente por créditos dictados y departamento
+    public List<Profesor> profesoresActivosPorDepartamentoYCreditosMinimos(String departamento, int minCreditos) {
+        return profeRepo.findDistinctByActiveTrueAndDepartamentoIgnoreCaseAndCursos_CreditosGreaterThanEqualOrderByApellidoAscNombreAsc(departamento, minCreditos);
+    }
+
 }
 

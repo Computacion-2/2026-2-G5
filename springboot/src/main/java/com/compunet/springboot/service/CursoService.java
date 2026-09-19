@@ -1,5 +1,6 @@
 package com.compunet.springboot.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -42,6 +43,11 @@ public class CursoService {
     // Ejercicio 13: Cursos por créditos mínimos ordenados descendentemente
     public List<Curso> cursosPorCreditosMinimosOrdenados(int creditosMinimos) {
         return cursoRepo.findByCreditosGreaterThanEqualOrderByCreditosDesc(creditosMinimos);
+    }
+
+    // Ejercicio 4 preparcial: Top 5 cursos con mayor cantidad de créditos por departamentos, profesor y estudiantes
+    public List<Curso> top5CursosPorDepartamentosProfesorYEstudiantes(Collection<String> departamentos, String apellidoProfesor, Collection<Long> estudiantesIds) {
+        return cursoRepo.findTop5ByDepartamentoInAndProfesor_ApellidoIgnoreCaseAndEstudianteCursos_Estudiante_IdInOrderByCreditosDesc(departamentos, apellidoProfesor, estudiantesIds);
     }
 
 }
