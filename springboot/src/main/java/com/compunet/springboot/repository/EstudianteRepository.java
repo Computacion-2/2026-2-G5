@@ -29,7 +29,7 @@ public interface EstudianteRepository extends JpaRepository<Estudiante, Long> {
     List<Estudiante> findActivosByCursoIdNative(@Param("cursoId") Long cursoId);
 
     // Ejercicio 2 preparcial: Búsqueda de estudiantes por especialidad docente y dominio institucional
-    List<Estudiante> findDistinctByActiveTrueAndCorreoInstitucionalEndingWithIgnoreCaseAndEstudianteCursos_Curso_Profesor_EspecialidadIgnoreCaseOrderByApellidoAscNameAsc(
+    List<Estudiante> findDistinctByActiveTrueAndCorreoInstitucionalEndingWithIgnoreCaseAndEstudianteCursos_Curso_Profesor_EspecialidadIgnoreCaseOrderByApellidoAscNombreAsc(
         String dominioCorreo,
         String especialidad
     );

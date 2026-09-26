@@ -32,7 +32,7 @@ public class Estudiante {
     private Long id;
 
     @Column (name = "nombre", nullable = false)
-    private String name;
+    private String nombre;
 
     @Column (name = "apellido", nullable = false)
     private String apellido;
