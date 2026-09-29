@@ -81,7 +81,7 @@ public class Controller {
         return matriculaService.findAll();
     }
 
-    @GetMapping("/usuarios")
+    @GetMapping("/usuariosRest")
     public List<Usuario> getUsuarios() {
         return userService.findAll();
     }

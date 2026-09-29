@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"
+</head>
+<body>
+    
+    <header th:replace="~{fragments/layout :: mainNavbar}"></header>
+    <main>
+        <h1 th:text="${titulo}">Titulo de fallbac</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre Completo</th>
+                    <th>Correo Institucional</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${#lists.isEmpty(usuarios)}">
+                    <td colspan="4"> No hay usuarios registrados actualmente.</td>
+                </tr>
+
+                <tr th:each="u , stat : ${usuarios}">
+                    <td th:text="${stat.count}">1</td>
+                    <td th:text="${u.nombre + ' ' + u.apellido}"> Juan Perez</td>
+                    <td th:text="${u.correoInstitucional}">jperez@icesi.edu.co</td>
+                    <td>
+                        <span th:if="${u.active}">Activo</span>
+                        <span th:unless="${u.active}">Inactivo</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>
