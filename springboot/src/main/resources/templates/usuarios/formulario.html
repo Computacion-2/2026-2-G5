@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de creación de Usuarios</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: mainNavbar}"></header>
+    <main>
+        <h2>Formulario de creacion y edicion de usuarios</h2>
+
+        <div th:replace="~{fragments/layout :: alert}"></div>
+
+        <form th:action="@{/usuarios/guardar}" th:object="${usuario}" method="post">
+
+            <input type="hidden" th:field="*{id}"/>
+
+            <div>
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" th:field="*{nombre}" required/>
+            </div>
+            <div>
+                <label for="apellido">Apellido</label>
+                <input type="text" id="apellido" th:field="*{apellido}" required/>
+            </div>
+            <div>
+                <label for="correoInstitucional">Correo Institucional</label>
+                <input type="text" id="correoInstitucional" th:field="*{correoInstitucional}" required/>
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="text" id="password" th:field="*{password}" required/>
+            </div>
+            <div>
+                <label for="rol">Rol Principal</label>
+                <select id="rol" name="nombreRol" required>
+                    <option value="ESTUDIANTE">Estudiante</option>
+                    <option value="DOCENTE">Profesor</option>
+                    <option value="ADMIN">Administrador</option>
+                </select>
+            </div>
+
+            <input type="hidden" th:field="*{active}"/>
+
+            <div>
+                <button type="submit">Guardar Usuario</button>
+                <a th:href="@{/usuarios}">Cancelar</a>
+            </div>
+        </form>
+    </main>
+    
+</body>
+</html>

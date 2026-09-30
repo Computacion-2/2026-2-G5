@@ -17,6 +17,15 @@
         </nav>
     </header>
 
+    <div th:fragment="alert">
+        <div th:if="${exito}" class="alert alert-success">
+            <span th:text="${exito}">mensaje de exito</span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger">
+            <span th:text="${error}">mensaje de error</span>
+        </div>
+    </div>
+
 </body>
 
 </html>

@@ -10,8 +10,9 @@
     
     <header th:replace="~{fragments/layout :: mainNavbar}"></header>
     <main>
-        <h1 th:text="${titulo}">Titulo de fallbac</h1>
+        <h1 th:text="${titulo}">Titulo de fallback</h1>
 
+        <div th:replace="~{fragments/layout :: alert}"></div>
         <table>
             <thead>
                 <tr>
@@ -19,6 +20,7 @@
                     <th>Nombre Completo</th>
                     <th>Correo Institucional</th>
                     <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,6 +35,10 @@
                     <td>
                         <span th:if="${u.active}">Activo</span>
                         <span th:unless="${u.active}">Inactivo</span>
+                    </td>
+                    <td>
+                        <a th:href="@{/usuarios/editar/{id}(id=${u.id})}">Editar</a>
+                        <a th:href="@{/usuarios/desactivar/{id}(id=${u.id})}">Desactivar</a>
                     </td>
                 </tr>
             </tbody>
