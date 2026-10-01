@@ -1,6 +1,7 @@
 package com.compunet.springboot.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,10 @@ import com.compunet.springboot.model.Profesor;
 @Repository
 public interface ProfesorRepository extends JpaRepository<Profesor, Long> {
     
+    // Búsqueda y existencia por correo institucional
+    Optional<Profesor> findByCorreoInstitucional(String correoInstitucional);
+    boolean existsByCorreoInstitucional(String correoInstitucional);
+
     public List<Profesor> findByDepartamento(String depto);
 
     // Ejercicio 3: Obtener los profesores activos (active = true) que pertenezcan a un departamento específico, sin distinguir mayúsculas de minúsculas

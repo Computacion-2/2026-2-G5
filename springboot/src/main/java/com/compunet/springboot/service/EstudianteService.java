@@ -1,6 +1,7 @@
 package com.compunet.springboot.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,53 @@ public class EstudianteService {
 
     public List<Estudiante> findAll() {
         return estudianteRepo.findAll();
+    }
+
+    public Optional<Estudiante> obtenerPorId(Long id) {
+        return estudianteRepo.findById(id);
+    }
+
+    public Optional<Estudiante> porCorreoInstitucional(String correo) {
+        return estudianteRepo.findByCorreoInstitucional(correo);
+    }
+
+    public boolean existePorCorreoInstitucional(String correo) {
+        return estudianteRepo.existsByCorreoInstitucional(correo);
+    }
+
+    public Estudiante registrarEstudiante(Estudiante estudiante) {
+        if (estudianteRepo.existsByCorreoInstitucional(estudiante.getCorreoInstitucional())) {
+            throw new IllegalArgumentException("El correo institucional ya se encuentra registrado: "
+                    + estudiante.getCorreoInstitucional());
+        }
+        estudiante.setActive(true);
+        return estudianteRepo.save(estudiante);
+    }
+
+    public Estudiante actualizarEstudiante(Long id, Estudiante estudianteActualizado) {
+        Estudiante estudianteDb = estudianteRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró el estudiante con ID: " + id));
+
+        if (!estudianteDb.getCorreoInstitucional().equalsIgnoreCase(estudianteActualizado.getCorreoInstitucional())
+                && estudianteRepo.existsByCorreoInstitucional(estudianteActualizado.getCorreoInstitucional())) {
+            throw new IllegalArgumentException("El nuevo correo institucional ya se encuentra registrado: "
+                    + estudianteActualizado.getCorreoInstitucional());
+        }
+
+        estudianteDb.setNombre(estudianteActualizado.getNombre());
+        estudianteDb.setApellido(estudianteActualizado.getApellido());
+        estudianteDb.setCorreoInstitucional(estudianteActualizado.getCorreoInstitucional());
+        estudianteDb.setColorFavorito(estudianteActualizado.getColorFavorito());
+        estudianteDb.setActive(estudianteActualizado.isActive());
+
+        return estudianteRepo.save(estudianteDb);
+    }
+
+    public Estudiante alternarEstado(Long id) {
+        Estudiante estudiante = estudianteRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró el estudiante con ID: " + id));
+        estudiante.setActive(!estudiante.isActive());
+        return estudianteRepo.save(estudiante);
     }
 
     // Ejercicio 7: Estudiantes por dominio de correo

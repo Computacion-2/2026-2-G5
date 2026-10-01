@@ -1,6 +1,7 @@
 package com.compunet.springboot.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +12,10 @@ import com.compunet.springboot.model.Estudiante;
 
 @Repository
 public interface EstudianteRepository extends JpaRepository<Estudiante, Long> {
+
+    // Búsqueda y existencia por correo institucional
+    Optional<Estudiante> findByCorreoInstitucional(String correoInstitucional);
+    boolean existsByCorreoInstitucional(String correoInstitucional);
 
     // Ejercicio 7: Obtener los estudiantes cuyo correoInstitucional termine con una cadena o dominio dado, ignorando mayúsculas/minúsculas
     List<Estudiante> findByCorreoInstitucionalEndingWithIgnoreCase(String dominio);

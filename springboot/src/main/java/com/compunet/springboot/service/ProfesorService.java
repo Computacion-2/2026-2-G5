@@ -1,6 +1,7 @@
 package com.compunet.springboot.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,54 @@ public class ProfesorService {
 
     public List<Profesor> findAll() {
         return profeRepo.findAll();
+    }
+
+    public Optional<Profesor> obtenerPorId(Long id) {
+        return profeRepo.findById(id);
+    }
+
+    public Optional<Profesor> porCorreoInstitucional(String correo) {
+        return profeRepo.findByCorreoInstitucional(correo);
+    }
+
+    public boolean existePorCorreoInstitucional(String correo) {
+        return profeRepo.existsByCorreoInstitucional(correo);
+    }
+
+    public Profesor registrarProfesor(Profesor profesor) {
+        if (profeRepo.existsByCorreoInstitucional(profesor.getCorreoInstitucional())) {
+            throw new IllegalArgumentException("El correo institucional ya se encuentra registrado: "
+                    + profesor.getCorreoInstitucional());
+        }
+        profesor.setActive(true);
+        return profeRepo.save(profesor);
+    }
+
+    public Profesor actualizarProfesor(Long id, Profesor profesorActualizado) {
+        Profesor profesorDb = profeRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró el profesor con ID: " + id));
+
+        if (!profesorDb.getCorreoInstitucional().equalsIgnoreCase(profesorActualizado.getCorreoInstitucional())
+                && profeRepo.existsByCorreoInstitucional(profesorActualizado.getCorreoInstitucional())) {
+            throw new IllegalArgumentException("El nuevo correo institucional ya se encuentra registrado: "
+                    + profesorActualizado.getCorreoInstitucional());
+        }
+
+        profesorDb.setNombre(profesorActualizado.getNombre());
+        profesorDb.setApellido(profesorActualizado.getApellido());
+        profesorDb.setCorreoInstitucional(profesorActualizado.getCorreoInstitucional());
+        profesorDb.setDepartamento(profesorActualizado.getDepartamento());
+        profesorDb.setEspecialidad(profesorActualizado.getEspecialidad());
+        profesorDb.setActive(profesorActualizado.isActive());
+
+        return profeRepo.save(profesorDb);
+    }
+
+    public Profesor alternarEstado(Long id) {
+        Profesor profesor = profeRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró el profesor con ID: " + id));
+        profesor.setActive(!profesor.isActive());
+        return profeRepo.save(profesor);
     }
 
     public List<Profesor> profesoresPorDepto(String depto) {

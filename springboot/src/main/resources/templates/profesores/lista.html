@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Profesores</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    
+    <header th:replace="~{fragments/layout :: mainNavbar}"></header>
+    <main>
+        <h1 th:text="${titulo}">Gestión de Profesores</h1>
+
+        <div th:replace="~{fragments/layout :: alert}"></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre Completo</th>
+                    <th>Correo Institucional</th>
+                    <th>Departamento</th>
+                    <th>Especialidad</th>
+                    <th>Cursos Dictados</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${#lists.isEmpty(profesores)}">
+                    <td colspan="8">No hay profesores registrados actualmente.</td>
+                </tr>
+
+                <tr th:each="p, stat : ${profesores}">
+                    <td th:text="${stat.count}">1</td>
+                    <td th:text="${p.nombre + ' ' + p.apellido}">Nombre Profesor</td>
+                    <td th:text="${p.correoInstitucional}">correo@icesi.edu.co</td>
+                    <td th:text="${p.departamento}">Departamento</td>
+                    <td th:text="${p.especialidad}">Especialidad</td>
+                    <td>
+                        <ul th:if="${not #lists.isEmpty(p.cursos)}" style="list-style-type: disc; margin-left: 20px;">
+                            <li th:each="c : ${p.cursos}" th:text="${c.nombre}">Curso</li>
+                        </ul>
+                        <span th:if="${#lists.isEmpty(p.cursos)}" style="color: #64748b; font-style: italic;">Sin cursos asignados</span>
+                    </td>
+                    <td>
+                        <span th:if="${p.active}">Activo</span>
+                        <span th:unless="${p.active}">Inactivo</span>
+                    </td>
+                    <td>
+                        <a th:href="@{/profesores/desactivar/{id}(id=${p.id})}" th:text="${p.active ? 'Desactivar' : 'Activar'}">Alternar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>
