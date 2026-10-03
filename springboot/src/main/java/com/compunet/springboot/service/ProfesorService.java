@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.compunet.springboot.model.Profesor;
+import com.compunet.springboot.model.Usuario;
 import com.compunet.springboot.repository.ProfesorRepository;
+import com.compunet.springboot.repository.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,78 +16,70 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProfesorService {
 
-    private final ProfesorRepository profeRepo;
+    private final ProfesorRepository profesorRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public List<Profesor> findAll() {
-        return profeRepo.findAll();
+    /**
+     * Obtener todos los profesores registrados.
+     */
+    public List<Profesor> listarTodos() {
+        return profesorRepository.findAll();
     }
 
+    /**
+     * Obtener un profesor por su identificador único (ID).
+     */
     public Optional<Profesor> obtenerPorId(Long id) {
-        return profeRepo.findById(id);
+        return profesorRepository.findById(id);
     }
 
-    public Optional<Profesor> porCorreoInstitucional(String correo) {
-        return profeRepo.findByCorreoInstitucional(correo);
+    /**
+     * Obtener perfil de profesor por el ID del usuario asociado.
+     */
+    public Optional<Profesor> obtenerPorUsuarioId(Long usuarioId) {
+        return profesorRepository.findByUsuario_Id(usuarioId);
     }
 
-    public boolean existePorCorreoInstitucional(String correo) {
-        return profeRepo.existsByCorreoInstitucional(correo);
-    }
+    /**
+     * Registrar un perfil de profesor asociándolo a un usuario existente.
+     */
+    public Profesor registrarProfesor(Long usuarioId, String especialidad, String departamento) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró el usuario con ID: " + usuarioId));
 
-    public Profesor registrarProfesor(Profesor profesor) {
-        if (profeRepo.existsByCorreoInstitucional(profesor.getCorreoInstitucional())) {
-            throw new IllegalArgumentException("El correo institucional ya se encuentra registrado: "
-                    + profesor.getCorreoInstitucional());
-        }
-        profesor.setActive(true);
-        return profeRepo.save(profesor);
-    }
-
-    public Profesor actualizarProfesor(Long id, Profesor profesorActualizado) {
-        Profesor profesorDb = profeRepo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No se encontró el profesor con ID: " + id));
-
-        if (!profesorDb.getCorreoInstitucional().equalsIgnoreCase(profesorActualizado.getCorreoInstitucional())
-                && profeRepo.existsByCorreoInstitucional(profesorActualizado.getCorreoInstitucional())) {
-            throw new IllegalArgumentException("El nuevo correo institucional ya se encuentra registrado: "
-                    + profesorActualizado.getCorreoInstitucional());
+        if (profesorRepository.findByUsuario_Id(usuarioId).isPresent()) {
+            throw new IllegalArgumentException("El usuario ya tiene un perfil docente asignado.");
         }
 
-        profesorDb.setNombre(profesorActualizado.getNombre());
-        profesorDb.setApellido(profesorActualizado.getApellido());
-        profesorDb.setCorreoInstitucional(profesorActualizado.getCorreoInstitucional());
-        profesorDb.setDepartamento(profesorActualizado.getDepartamento());
-        profesorDb.setEspecialidad(profesorActualizado.getEspecialidad());
-        profesorDb.setActive(profesorActualizado.isActive());
+        Profesor profesor = new Profesor();
+        profesor.setUsuario(usuario);
+        profesor.setEspecialidad(especialidad);
+        profesor.setDepartamento(departamento);
 
-        return profeRepo.save(profesorDb);
+        return profesorRepository.save(profesor);
     }
 
-    public Profesor alternarEstado(Long id) {
-        Profesor profesor = profeRepo.findById(id)
+    /**
+     * Actualizar los datos del perfil de profesor.
+     */
+    public Profesor actualizarProfesor(Long id, String especialidad, String departamento) {
+        Profesor profesorDb = profesorRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No se encontró el profesor con ID: " + id));
-        profesor.setActive(!profesor.isActive());
-        return profeRepo.save(profesor);
+
+        profesorDb.setEspecialidad(especialidad);
+        profesorDb.setDepartamento(departamento);
+
+        return profesorRepository.save(profesorDb);
     }
 
-    public List<Profesor> profesoresPorDepto(String depto) {
-        return profeRepo.findByDepartamento(depto);
+    /**
+     * Eliminar el perfil de profesor.
+     */
+    public void eliminarProfesor(Long id) {
+        if (!profesorRepository.existsById(id)) {
+            throw new IllegalArgumentException("No se encontró el profesor con ID: " + id);
+        }
+        profesorRepository.deleteById(id);
     }
-
-    // Ejercicio 3: Obtener los profesores activos por departamento (sin distinguir mayúsculas)
-    public List<Profesor> listarProfesoresActivos(String depto) {
-        return profeRepo.findByDepartamentoIgnoreCaseAndActiveTrue(depto);
-    }
-
-    // Ejercicio 6: Obtener profesores de una especialidad ordenados alfabéticamente por apellido asc
-    public List<Profesor> profesoresPorEspecialidadOrdenados(String especialidad) {
-        return profeRepo.findByEspecialidadIgnoreCaseOrderByApellidoAsc(especialidad);
-    }
-
-    // Ejercicio 1 preparcial: Reporte docente por créditos dictados y departamento
-    public List<Profesor> profesoresActivosPorDepartamentoYCreditosMinimos(String departamento, int minCreditos) {
-        return profeRepo.findDistinctByActiveTrueAndDepartamentoIgnoreCaseAndCursos_CreditosGreaterThanEqualOrderByApellidoAscNombreAsc(departamento, minCreditos);
-    }
-
 }
 

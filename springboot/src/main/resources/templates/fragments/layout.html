@@ -1,33 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
 </head>
-
 <body>
 
+    <!-- 1. Fragmento de Barra de Navegación Global -->
     <header th:fragment="mainNavbar">
         <nav>
-            <a>Portal Académico ICESI</a>
-            <a th:href="@{/usuarios}">Usuarios</a>
-            <a th:href="@{/estudiantes}">Estudiantes</a>
-            <a th:href="@{/profesores}">Profesores</a>
-            <a th:href="@{/usuarios/nuevo}">+ Registrar Usuario</a>
+            <a th:href="@{/usuarios}"><strong>ICESI Académico</strong></a> |
+            <a th:href="@{/usuarios}">Usuarios</a> |
+            <a th:href="@{/profesores-mvc}">Cuerpo Docente</a> |
+            <a th:href="@{/cursos-mvc}">Cursos</a> |
+            <a th:href="@{/matriculas-mvc}">Matrículas</a> |
+            <a th:href="@{/roles-mvc}">Roles</a> |
+            <a th:href="@{/permisos-mvc}">Permisos</a>
         </nav>
     </header>
 
-    <div th:fragment="alert">
+    <!-- 2. Fragmento de Mensajes Flash (Alertas de Éxito / Error) -->
+    <div th:fragment="alerts">
         <div th:if="${exito}" class="alert alert-success">
-            <span th:text="${exito}">mensaje de exito</span>
+            <span th:text="${exito}">Operación realizada con éxito</span>
         </div>
         <div th:if="${error}" class="alert alert-danger">
-            <span th:text="${error}">mensaje de error</span>
+            <span th:text="${error}">Ha ocurrido un error</span>
         </div>
     </div>
 
 </body>
-
 </html>

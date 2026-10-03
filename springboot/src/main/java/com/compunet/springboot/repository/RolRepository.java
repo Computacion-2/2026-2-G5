@@ -10,6 +10,8 @@ import com.compunet.springboot.model.Rol;
 @Repository
 public interface RolRepository extends JpaRepository<Rol, Long> {
 
-    public Optional<Rol> findByNombre(String nombreRol);
-    
+    Optional<Rol> findByNombre(String nombre);
+
+    boolean existsByNombre(String nombre);
+
 }

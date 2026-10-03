@@ -1,5 +1,7 @@
 package com.compunet.springboot.model;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -11,15 +13,14 @@ import lombok.Setter;
 @Embeddable
 @Getter
 @Setter
-@NoArgsConstructor 
-@AllArgsConstructor 
-@EqualsAndHashCode 
-public class EstudianteCursoId {
-    
-    @Column (name = "estudiante_id")
-    private Long estudianteId;
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+public class MatriculaId implements Serializable {
 
-    @Column (name = "curso_id")
+    @Column(name = "usuario_id")
+    private Long usuarioId;
+
+    @Column(name = "curso_id")
     private Long cursoId;
-    
 }

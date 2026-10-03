@@ -1,11 +1,9 @@
 package com.compunet.springboot.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.compunet.springboot.model.Rol;
@@ -13,66 +11,91 @@ import com.compunet.springboot.model.Usuario;
 import com.compunet.springboot.repository.RolRepository;
 import com.compunet.springboot.repository.UsuarioRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
-  
+
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
 
-    @Autowired
-    public UsuarioService(UsuarioRepository userRepo, RolRepository rolRepo){
-        this.usuarioRepository = userRepo;
-        this.rolRepository = rolRepo;
-    }
-
-    public List<Usuario> findAll(){
+    /**
+     * Consulta todos los usuarios del sistema.
+     */
+    public List<Usuario> listarUsuariosActivos() {
         return usuarioRepository.findAll();
     }
 
-    // Ejercicio 1: Buscar usuario por su correoInstitucional exacto
-    public Optional<Usuario> porCorreoInstitucional(String correo) {
-        return usuarioRepository.findByCorreoInstitucional(correo);
-    }
-
-    // Ejercicio 2: Comprobar si ya existe un usuario con un correoInstitucional determinado
-    public boolean existePorCorreoInstitucional(String correo) {
-        return usuarioRepository.existsByCorreoInstitucional(correo);
-    }
-
-    // Ejercicio 11: Obtener usuarios activos con un rol determinado (sin distinguir mayúsculas)
-    public List<Usuario> usuariosActivosPorRol(String nombreRol) {
-        return usuarioRepository.findByActiveTrueAndRoles_NombreIgnoreCase(nombreRol);
-    }
-
-    // Ejercicio 5 preparcial: Usuarios activos por roles y permiso
-    public List<Usuario> usuariosActivosPorRolesYPermiso(Collection<String> nombresRoles, String nombrePermiso) {
-        return usuarioRepository.findDistinctByActiveTrueAndRoles_NombreInAndRoles_Permisos_NombreIgnoreCaseOrderByApellidoAscNombreAsc(nombresRoles, nombrePermiso);
-    }
-
-    public Usuario registrarUsuario(Usuario usuario, String nombreRol) {
-        if (usuarioRepository.existsByCorreoInstitucional(usuario.getCorreoInstitucional())) {
-            throw new IllegalArgumentException("El correo institucional ya se encuentra registrado: "
-            + usuario.getCorreoInstitucional());
-        }
-
-        Rol rol = rolRepository.findByNombre(nombreRol).orElseThrow(() -> 
-            new IllegalStateException("El rol ingresado no existe"));
-
-        if (usuario.getRoles() == null) {
-            usuario.setRoles(new ArrayList<>());
-        }
-
-        usuario.getRoles().add(rol);
-        usuario.setActive(true);
-
-        return usuarioRepository.save(usuario);
-    }
-
+    /**
+     * Busca un usuario por su identificador único (ID).
+     */
     public Optional<Usuario> obtenerPorId(Long id) {
         return usuarioRepository.findById(id);
     }
 
-    public Usuario actualizarUsuario(Long id, Usuario usuarioActualizado) {
+
+    /**
+     * Ejercicio 11: Listar usuarios activos por nombre de rol.
+     */
+    public List<Usuario> listarUsuariosActivosPorRol(String rol) {
+        return usuarioRepository.findByRoles_NombreIgnoreCaseAndActiveTrue(rol);
+    }
+
+    /**
+     * Registra un nuevo usuario en el sistema con una lista de IDs de roles.
+     */
+    public Usuario registrarUsuario(Usuario usuario, List<Long> rolIds) {
+        if (usuarioRepository.existsByCorreoInstitucional(usuario.getCorreoInstitucional())) {
+            throw new IllegalArgumentException("El correo institucional ya se encuentra registrado: "
+                    + usuario.getCorreoInstitucional());
+        }
+
+        if (rolIds != null && !rolIds.isEmpty()) {
+            List<Rol> roles = rolRepository.findAllById(rolIds);
+            usuario.setRoles(roles);
+        } else if (usuario.getRoles() == null || usuario.getRoles().isEmpty()) {
+            Rol rolDefault = rolRepository.findByNombre("ESTUDIANTE")
+                    .orElseThrow(() -> new IllegalStateException("El rol por defecto no existe."));
+            usuario.setRoles(new ArrayList<>(List.of(rolDefault)));
+        }
+
+        usuario.setActive(true);
+        return usuarioRepository.save(usuario);
+    }
+
+    /**
+     * Registra un nuevo usuario en el sistema.
+     */
+    public Usuario registrarUsuario(Usuario usuario) {
+        return registrarUsuario(usuario, (List<Long>) null);
+    }
+
+    /**
+     * Registra un nuevo usuario con un rol inicial opcional por nombre.
+     */
+    public Usuario registrarUsuario(Usuario usuario, String nombreRolInicial) {
+        if (usuarioRepository.existsByCorreoInstitucional(usuario.getCorreoInstitucional())) {
+            throw new IllegalArgumentException("El correo institucional ya se encuentra registrado: "
+                    + usuario.getCorreoInstitucional());
+        }
+
+        if (usuario.getRoles() == null || usuario.getRoles().isEmpty()) {
+            String rolABuscar = (nombreRolInicial != null && !nombreRolInicial.isBlank()) ? nombreRolInicial : "ESTUDIANTE";
+            Rol rol = rolRepository.findByNombre(rolABuscar)
+                    .orElseThrow(() -> new IllegalStateException("El rol especificado no existe: " + rolABuscar));
+            usuario.setRoles(new ArrayList<>(List.of(rol)));
+        }
+
+        usuario.setActive(true);
+        return usuarioRepository.save(usuario);
+    }
+
+    /**
+     * Actualiza los datos de un usuario existente aplicando reglas de negocio y asignando sus roles por IDs.
+     * Nota: El estado (active) se gestiona exclusivamente a través de alternarEstado.
+     */
+    public Usuario actualizarUsuario(Long id, Usuario usuarioActualizado, List<Long> rolIds) {
         Usuario usuarioDb = usuarioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No se encontró el usuario con ID: " + id));
 
@@ -91,16 +114,40 @@ public class UsuarioService {
             usuarioDb.setPassword(usuarioActualizado.getPassword());
         }
 
-        usuarioDb.setActive(usuarioActualizado.isActive());
+        if (rolIds != null && !rolIds.isEmpty()) {
+            List<Rol> roles = rolRepository.findAllById(rolIds);
+            usuarioDb.setRoles(roles);
+        } else if (usuarioActualizado.getRoles() != null) {
+            usuarioDb.setRoles(new ArrayList<>(usuarioActualizado.getRoles()));
+        }
 
         return usuarioRepository.save(usuarioDb);
     }
 
+    /**
+     * Actualiza los datos de un usuario existente aplicando reglas de negocio.
+     */
+    public Usuario actualizarUsuario(Long id, Usuario usuarioActualizado) {
+        return actualizarUsuario(id, usuarioActualizado, null);
+    }
+
+    /**
+     * Alterna el estado activo/inactivo de un usuario (Soft delete / Reactivación).
+     */
     public Usuario alternarEstado(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No se encontró el usuario con ID: " + id));
         usuario.setActive(!usuario.isActive());
         return usuarioRepository.save(usuario);
     }
-}
 
+    /**
+     * Eliminar físicamente un usuario por ID.
+     */
+    public void eliminarUsuario(Long id) {
+        if (!usuarioRepository.existsById(id)) {
+            throw new IllegalArgumentException("No se encontró el usuario con ID: " + id);
+        }
+        usuarioRepository.deleteById(id);
+    }
+}

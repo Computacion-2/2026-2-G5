@@ -1,67 +1,74 @@
 package com.compunet.springboot.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.compunet.springboot.model.Curso;
-import com.compunet.springboot.model.Estudiante;
-import com.compunet.springboot.model.EstudianteCurso;
-import com.compunet.springboot.model.EstudianteCursoId;
+import com.compunet.springboot.model.Matricula;
+import com.compunet.springboot.model.MatriculaId;
+import com.compunet.springboot.model.Usuario;
 import com.compunet.springboot.repository.CursoRepository;
-import com.compunet.springboot.repository.EstudianteCursoRepository;
-import com.compunet.springboot.repository.EstudianteRepository;
+import com.compunet.springboot.repository.MatriculaRepository;
+import com.compunet.springboot.repository.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor 
+@RequiredArgsConstructor
 public class MatriculaService {
 
-    private final EstudianteCursoRepository repository;
-    private final EstudianteRepository estudianteRepository;
+    private final MatriculaRepository matriculaRepository;
+    private final UsuarioRepository usuarioRepository;
     private final CursoRepository cursoRepository;
 
-    public List<EstudianteCurso> findAll() {
-        return repository.findAll();
+    /**
+     * Listar todas las matrículas registradas.
+     */
+    public List<Matricula> listarTodas() {
+        return matriculaRepository.findAll();
     }
 
-    // Ejercicio 12: Verificar matrícula en tabla intermedia
-    public boolean estaMatriculado(Long estudianteId, Long cursoId) {
-        return repository.existsByEstudiante_IdAndCurso_Id(estudianteId, cursoId);
+    /**
+     * Obtener una matrícula por su ID compuesto.
+     */
+    public Optional<Matricula> obtenerPorId(Long usuarioId, Long cursoId) {
+        return matriculaRepository.findById(new MatriculaId(usuarioId, cursoId));
     }
 
-    // Ejercicio 3 preparcial - Parte A: Verificar si existe estudiante activo con profesor y departamento
-    public boolean existeEstudianteActivoEnCursoProfesorYDepartamento(String departamentoCurso, Long profesorId) {
-        return repository.existsByEstudiante_ActiveTrueAndCurso_DepartamentoIgnoreCaseAndCurso_Profesor_Id(departamentoCurso, profesorId);
-    }
+    /**
+     * Realizar la matrícula de un usuario (estudiante) en un curso académico.
+     */
+    public Matricula matricularEstudianteEnCurso(Long usuarioId, Long cursoId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + usuarioId));
 
-    // Ejercicio 3 preparcial - Parte B: Contar total de matrículas por subcadena de nombre y rango de créditos
-    public long contarMatriculasPorNombreCursoYCreditos(String subcadenaNombre, int minCreditos, int maxCreditos) {
-        return repository.countByCurso_NombreIgnoreCaseContainingAndCurso_CreditosBetween(subcadenaNombre, minCreditos, maxCreditos);
-    }
-
-
-    public EstudianteCurso matricularEstudianteEnCurso(Long estudianteId, Long cursoId) throws Exception {
-        Estudiante estudiante = estudianteRepository.findById(estudianteId)
-            .orElseThrow(() -> new IllegalArgumentException("Estudiante no encontrado con ID: " + estudianteId));
-
-        if (!estudiante.isActive()) {
+        if (!usuario.isActive()) {
             throw new IllegalStateException("El estudiante está inactivo y no puede matricular cursos.");
         }
 
         Curso curso = cursoRepository.findById(cursoId)
-            .orElseThrow(() -> new IllegalArgumentException("Curso no encontrado con ID: " + cursoId));
+                .orElseThrow(() -> new IllegalArgumentException("Curso no encontrado con ID: " + cursoId));
 
-        EstudianteCursoId idCompuesto = new EstudianteCursoId(estudianteId, cursoId);
-        if (repository.existsById(idCompuesto)) {
-            throw new IllegalStateException("El estudiante ya se encuentra matriculado en este curso.");
+        MatriculaId idCompuesto = new MatriculaId(usuarioId, cursoId);
+        if (matriculaRepository.existsById(idCompuesto)) {
+            throw new IllegalStateException("El estudiante ya se encuentra matriculado en el curso " + curso.getNombre());
         }
 
-        EstudianteCurso nuevaMatricula = new EstudianteCurso(estudiante, curso);
-        EstudianteCurso guardado = repository.save(nuevaMatricula);
-
-        return guardado;
+        Matricula matricula = new Matricula(usuario, curso);
+        return matriculaRepository.save(matricula);
     }
-}
 
+    /**
+     * Cancelar o eliminar una matrícula.
+     */
+    public void desmatricularEstudiante(Long usuarioId, Long cursoId) {
+        MatriculaId idCompuesto = new MatriculaId(usuarioId, cursoId);
+        if (!matriculaRepository.existsById(idCompuesto)) {
+            throw new IllegalArgumentException("No existe la matrícula del usuario " + usuarioId + " en el curso " + cursoId);
+        }
+        matriculaRepository.deleteById(idCompuesto);
+    }
+
+}

@@ -32,4 +32,19 @@ build/
 ### VS Code ###
 .vscode/
 logs/
-.mvn/
+
+#### Others ###
+*.aux
+*.fls
+*.fdb*
+*.log
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+*.sty
+/slides/*.html
+/slides/*.js
+/slides/images/

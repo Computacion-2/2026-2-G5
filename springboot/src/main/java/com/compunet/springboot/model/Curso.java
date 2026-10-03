@@ -1,6 +1,5 @@
 package com.compunet.springboot.model;
 
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,35 +22,34 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity 
+@Entity
 @Getter
 @Setter
-@NoArgsConstructor 
-@AllArgsConstructor 
-@Table (name = "curso")
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "curso")
 public class Curso {
 
-    @Id 
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (name = "nombre")
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column (name = "creditos")
-    private Integer creditos;
-    
-    @Column (name = "departamento")
+    @Column(name = "creditos", nullable = false)
+    private int creditos;
+
+    @Column(name = "departamento", nullable = false)
     private String departamento;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profesor_id", nullable = false)
-    @JsonIgnoreProperties (value = "cursos")
+    @JsonIgnoreProperties(value = "cursos")
     private Profesor profesor;
 
-    @OneToMany (mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore 
-    @JsonIgnoreProperties (value = "curso")
-    private List<EstudianteCurso> estudianteCursos = new ArrayList<>();
-    
+    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Matricula> matriculas = new ArrayList<>();
+
 }

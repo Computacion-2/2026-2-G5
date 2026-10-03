@@ -1,12 +1,14 @@
 package com.compunet.springboot.service;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.compunet.springboot.model.Curso;
+import com.compunet.springboot.model.Profesor;
 import com.compunet.springboot.repository.CursoRepository;
+import com.compunet.springboot.repository.ProfesorRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,40 +16,61 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CursoService {
 
-    private final CursoRepository cursoRepo;
+    private final CursoRepository cursoRepository;
+    private final ProfesorRepository profesorRepository;
 
-    public List<Curso> findAll() {
-        return cursoRepo.findAll();
+    /**
+     * Obtener todos los cursos registrados.
+     */
+    public List<Curso> listarTodos() {
+        return cursoRepository.findAll();
     }
 
-    // Ejercicio 4: Cursos por rango de créditos
-    public List<Curso> cursosPorRangoCreditos(int min, int max) {
-        return cursoRepo.findByCreditosBetween(min, max);
+    /**
+     * Obtener un curso por su ID.
+     */
+    public Optional<Curso> obtenerPorId(Long id) {
+        return cursoRepository.findById(id);
     }
 
-    // Ejercicio 5: Buscar cursos por coincidencia en el nombre
-    public List<Curso> buscarCursosPorNombre(String texto) {
-        return cursoRepo.findByNombreIgnoreCaseContaining(texto);
+    /**
+     * Registrar un nuevo curso asignándole su profesor responsable.
+     */
+    public Curso registrarCurso(Curso curso, Long profesorId) {
+        Profesor profesor = profesorRepository.findById(profesorId)
+                .orElseThrow(() -> new IllegalArgumentException("El profesor con ID " + profesorId + " no existe."));
+        curso.setProfesor(profesor);
+        return cursoRepository.save(curso);
     }
 
-    // Ejercicio 9: Cursos asignados a un profesor (ManyToOne)
-    public List<Curso> cursosPorProfesorId(Long profesorId) {
-        return cursoRepo.findByProfesor_Id(profesorId);
+    /**
+     * Actualizar los datos de un curso existente y/o su profesor asignado.
+     */
+    public Curso actualizarCurso(Long id, Curso cursoActualizado, Long profesorId) {
+        Curso cursoDb = cursoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró el curso con ID: " + id));
+
+        cursoDb.setNombre(cursoActualizado.getNombre());
+        cursoDb.setCreditos(cursoActualizado.getCreditos());
+        cursoDb.setDepartamento(cursoActualizado.getDepartamento());
+
+        if (profesorId != null) {
+            Profesor profesor = profesorRepository.findById(profesorId)
+                    .orElseThrow(() -> new IllegalArgumentException("El profesor con ID " + profesorId + " no existe."));
+            cursoDb.setProfesor(profesor);
+        }
+
+        return cursoRepository.save(cursoDb);
     }
 
-    // Ejercicio 10: Cursos según el departamento del profesor
-    public List<Curso> cursosPorDepartamentoProfesor(String depto) {
-        return cursoRepo.findByProfesor_DepartamentoIgnoreCase(depto);
+    /**
+     * Eliminar físicamente un curso por ID.
+     */
+    public void eliminarCurso(Long id) {
+        if (!cursoRepository.existsById(id)) {
+            throw new IllegalArgumentException("No se encontró el curso con ID: " + id);
+        }
+        cursoRepository.deleteById(id);
     }
-
-    // Ejercicio 13: Cursos por créditos mínimos ordenados descendentemente
-    public List<Curso> cursosPorCreditosMinimosOrdenados(int creditosMinimos) {
-        return cursoRepo.findByCreditosGreaterThanEqualOrderByCreditosDesc(creditosMinimos);
-    }
-
-    // Ejercicio 4 preparcial: Top 5 cursos con mayor cantidad de créditos por departamentos, profesor y estudiantes
-    public List<Curso> top5CursosPorDepartamentosProfesorYEstudiantes(Collection<String> departamentos, String apellidoProfesor, Collection<Long> estudiantesIds) {
-        return cursoRepo.findTop5ByDepartamentoInAndProfesor_ApellidoIgnoreCaseAndEstudianteCursos_Estudiante_IdInOrderByCreditosDesc(departamentos, apellidoProfesor, estudiantesIds);
-    }
-
 }
+
