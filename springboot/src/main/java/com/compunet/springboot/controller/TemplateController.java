@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 @Controller 
 public class TemplateController {
     
-    @GetMapping("/saludo")
+    @GetMapping("/public/saludo")
     public String saludo(Model model) {
         model.addAttribute("title", "¡Hola, mundo!");
         Usuario user = new Usuario();
