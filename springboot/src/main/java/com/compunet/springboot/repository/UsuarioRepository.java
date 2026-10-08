@@ -1,6 +1,8 @@
 package com.compunet.springboot.repository;
 
+import java.lang.StackWalker.Option;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,5 +16,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     List<Usuario> findByRoles_NombreIgnoreCaseAndActiveTrue(String nombreRol);
 
+    Optional<Usuario> findByCorreoInstitucional(String correoInstitucional);
 }
 

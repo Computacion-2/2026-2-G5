@@ -2,6 +2,7 @@ package com.compunet.springboot.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -101,6 +102,7 @@ public class UsuarioController {
      * 5. CAMBIAR ESTADO (Activar / Desactivar): GET /usuarios/desactivar/{id}
      */
     @GetMapping("/desactivar/{id}")
+    @PreAuthorize("hasAuthority('USER_UPDATE')")
     public String alternarEstadoUsuario(@PathVariable("id") Long id, RedirectAttributes flash) {
         try {
             Usuario u = usuarioService.alternarEstado(id);

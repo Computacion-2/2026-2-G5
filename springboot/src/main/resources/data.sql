@@ -49,18 +49,16 @@ INSERT INTO rol_permiso (rol_id, permiso_id) VALUES (3, 7); -- ENROLLMENT_WRITE
 INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) 
 VALUES ('Super', 'Admin', 'admin@icesi.edu.co', '$2a$10$4zGHzXmSU49qDHK7m820NeTrNxP9EZ4xC9h6xhD9FtlkphqvSgWKO', TRUE);
 
--- 2. Docente (Clave plana: 'profesor123')
-INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) 
-VALUES ('Domiciano', 'Rincon', 'drincon@icesi.edu.co', '$2a$10$u1/GC.ZBn1gwL9NY8oHwy./j.iN04SkyAV1WUh1BnBc33w6GafNI6', TRUE);
 
--- 3. Estudiante (Clave plana: 'estudiante123')
-INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) 
-VALUES ('Alejandro', 'Paez', 'apaez@icesi.edu.co', '$2a$10$fqtWn/Xuwr9KvGMw1ybRUezTtEgeK8RoxNk2hD.ZWY.x0UXhpmAAy', TRUE);
 
 -- Administradores (IDs: 1, 2)
 INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) VALUES ('Laura', 'Gomez', 'lgomez@icesi.edu.co', '$2a$10$hashedpassword123', TRUE);
 
 -- Docentes (IDs: 3 a 12)
+-- 2. Docente (Clave plana: 'profesor123')
+INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) 
+VALUES ('Domiciano', 'Rincon', 'drincon@icesi.edu.co', '$2a$10$u1/GC.ZBn1gwL9NY8oHwy./j.iN04SkyAV1WUh1BnBc33w6GafNI6', TRUE);
+
 INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) VALUES ('Kevin', 'Rodriguez', 'krodriguez@icesi.edu.co', '$2a$10$hashedpassword123', TRUE);
 INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) VALUES ('Alejandro', 'Munoz', 'amunoz@icesi.edu.co', '$2a$10$hashedpassword123', TRUE);
 INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) VALUES ('Alejandro', 'Penaranda', 'apenaranda@icesi.edu.co', '$2a$10$hashedpassword123', TRUE);
@@ -72,6 +70,10 @@ INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) V
 INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) VALUES ('Paola', 'Vallejo', 'pvallejo@icesi.edu.co', '$2a$10$hashedpassword123', TRUE);
 
 -- Estudiantes (IDs: 13 a 27)
+-- 3. Estudiante (Clave plana: 'estudiante123')
+INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) 
+VALUES ('Alejandro', 'Paez', 'apaez@icesi.edu.co', '$2a$10$fqtWn/Xuwr9KvGMw1ybRUezTtEgeK8RoxNk2hD.ZWY.x0UXhpmAAy', TRUE);
+
 INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) VALUES ('Carlos', 'Perez', 'cperez@icesi.edu.co', '$2a$10$hashedpassword123', TRUE);
 INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) VALUES ('Raul', 'Martinez', 'rmartinez@icesi.edu.co', '$2a$10$hashedpassword123', TRUE);
 INSERT INTO usuario (nombre, apellido, correo_institucional, password, active) VALUES ('Sofia', 'Castillo', 'scastillo@icesi.edu.co', '$2a$10$hashedpassword123', TRUE);

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo}">403 - Acceso Denegado</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <main style="text-align: center;">
+        <h1 style="color: red; font-size: 56px; margin: 0;">403</h1>
+        <h2>Acceso Denegado</h2>
+        <p style="color:black; margin-bottom:20px";>No tienes los privilegios necesarios para acceder a este recurso</p>
+        <p><a th:href="@{/usuarios}">Volver al Inicio</a></p>
+    </main>
+</body>
+</html>
