@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.compunet.springboot.model.Rol;
@@ -19,6 +20,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Consulta todos los usuarios del sistema.
@@ -61,6 +63,7 @@ public class UsuarioService {
         }
 
         usuario.setActive(true);
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword())); // Aquí podrías aplicar un encoder si es necesario
         return usuarioRepository.save(usuario);
     }
 
