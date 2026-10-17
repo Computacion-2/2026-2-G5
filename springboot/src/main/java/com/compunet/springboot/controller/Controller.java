@@ -32,19 +32,9 @@ public class Controller {
         return "!Proyecto Spring boot funcionando correctamente¡";
     }
 
-    @GetMapping("/cursos")
-    public List<Curso> getCursos() {
-        return cursoRepository.findAll();
-    }
-
-    @GetMapping("/profesores")
-    public List<Profesor> getProfesors() {
-        return profesorRepository.findAll();
-    }
-
     @GetMapping("/usuario")
     public List<Usuario> getUsuario() {
-        return usuarioService.listarUsuariosActivos();
+        return usuarioService.listarUsuarios();
     }
 
     @GetMapping("/crear-usuario")
@@ -52,7 +42,7 @@ public class Controller {
         Usuario nuevoUsuario = new Usuario();
         nuevoUsuario.setNombre("Alejandro");
         nuevoUsuario.setApellido("Peñaranda");
-        nuevoUsuario.setCorreoInstitucional("apenaranda@icesi.edu.co");
+        nuevoUsuario.setCorreoInstitucional("apenarandaNEW@icesi.edu.co");
         nuevoUsuario.setPassword("password");
 
         return usuarioService.registrarUsuario(nuevoUsuario, "ESTUDIANTE");

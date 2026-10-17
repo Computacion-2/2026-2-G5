@@ -25,8 +25,15 @@ public class UsuarioService {
     /**
      * Consulta todos los usuarios del sistema.
      */
-    public List<Usuario> listarUsuariosActivos() {
+    public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
+    }
+
+    public List<Usuario> listarUsuarios(Boolean active) {
+        return usuarioRepository.findAll()
+                .stream()
+                .filter(u -> active == u.isActive())
+                .toList();
     }
 
     /**
@@ -40,7 +47,7 @@ public class UsuarioService {
     /**
      * Ejercicio 11: Listar usuarios activos por nombre de rol.
      */
-    public List<Usuario> listarUsuariosActivosPorRol(String rol) {
+    public List<Usuario> listarUsuariosPorRol(String rol) {
         return usuarioRepository.findByRoles_NombreIgnoreCaseAndActiveTrue(rol);
     }
 

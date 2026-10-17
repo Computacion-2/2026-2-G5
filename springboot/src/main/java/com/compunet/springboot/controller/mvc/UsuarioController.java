@@ -1,4 +1,4 @@
-package com.compunet.springboot.controller;
+package com.compunet.springboot.controller.mvc;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class UsuarioController {
      */
     @GetMapping
     public String listarUsuarios(Model model) {
-        List<Usuario> lista = usuarioService.listarUsuariosActivos();
+        List<Usuario> lista = usuarioService.listarUsuarios();
         model.addAttribute("titulo", "Gestión de Usuarios Académicos");
         model.addAttribute("usuarios", lista);
         return "usuarios/lista";

@@ -48,7 +48,7 @@ public class UsuarioServiceIntegrationTest {
         assertTrue(usuarioGuardado.isActive());
         assertEquals("lgomez@icesi.edu.co", usuarioGuardado.getCorreoInstitucional());
 
-        List<Usuario> usuariosAdmin = usuarioService.listarUsuariosActivosPorRol("ADMINISTRADOR_TEST");
+        List<Usuario> usuariosAdmin = usuarioService.listarUsuariosPorRol("ADMINISTRADOR_TEST");
         assertFalse(usuariosAdmin.isEmpty(), "Debe encontrar al menos un usuario con el rol");
         assertTrue(usuariosAdmin.stream().anyMatch(u -> u.getCorreoInstitucional().equals("lgomez@icesi.edu.co")));
 
