@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ public class UsuarioServiceIntegrationTest {
         nuevoUsuario.setCorreoInstitucional("lgomez@icesi.edu.co");
         nuevoUsuario.setPassword("Segura123");
 
-        Usuario usuarioGuardado = usuarioService.registrarUsuario(nuevoUsuario, "ADMINISTRADOR_TEST");
+        Usuario usuarioGuardado = usuarioService.registrarUsuario(nuevoUsuario, Set.of("ADMINISTRADOR_TEST"));
 
         assertNotNull(usuarioGuardado.getId(), "la base de datos debe generar el ID autoincremental");
         assertTrue(usuarioGuardado.isActive());

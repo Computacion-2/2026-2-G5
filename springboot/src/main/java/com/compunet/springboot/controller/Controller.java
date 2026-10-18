@@ -45,7 +45,7 @@ public class Controller {
         nuevoUsuario.setCorreoInstitucional("apenarandaNEW@icesi.edu.co");
         nuevoUsuario.setPassword("password");
 
-        return usuarioService.registrarUsuario(nuevoUsuario, "ESTUDIANTE");
+        return usuarioService.registrarUsuario(nuevoUsuario);
     }
 }
 
