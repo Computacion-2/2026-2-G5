@@ -13,11 +13,16 @@ import com.compunet.springboot.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,6 +42,7 @@ public class UsuarioRestController {
 
 
     @GetMapping
+    @PreAuthorize("hasAuthority('USER_READ') or hasAnyRole('ADMINISTRADOR', 'PROFESOR')")
     public List<UsuarioResponseDTO> obtenerUsuarios(@RequestParam(name = "activo", required=false) Boolean active) {
 
         List<Usuario> users = usuarioService.listarUsuarios(active);
@@ -57,6 +63,21 @@ public class UsuarioRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> obtnerUsuarioPorId(@PathVariable Long id) {
+
+        Authentication authuser = SecurityContextHolder.getContext().getAuthentication();
+
+        Collection<? extends GrantedAuthority> authorities = authuser.getAuthorities();
+
+        if (authorities.isEmpty()){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        if (authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .noneMatch(authority -> List.of("USER_READ", "ROLE_ADMINISTRADOR", "ROLE_PROFESOR").contains(authority))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         Optional<Usuario> user = usuarioService.obtenerPorId(id);
 
         if (user.isEmpty()){
