@@ -9,5 +9,5 @@ import com.compunet.springboot.model.MatriculaId;
 @Repository
 public interface MatriculaRepository extends JpaRepository<Matricula, MatriculaId> {
 
+    boolean existsByIdCursoId(Long cursoId);
 }
-

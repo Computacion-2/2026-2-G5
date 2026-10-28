@@ -8,15 +8,21 @@
 
 ## Artículo 1. Stack Tecnológico Oficial (Inalterable)
 
-1. **Lenguaje y Runtime:** Java 21 LTS.
-2. **Framework Base:** Spring Boot `3.4.3` (Gestión de dependencias con Maven `./mvnw`).
-3. **Persistencia:** Spring Data JPA / Hibernate con base de datos en memoria H2 (`jdbc:h2:mem:academicodb`).
+1. **Lenguaje y Runtime:** Java 17 (configurado como release en `pom.xml`).
+2. **Framework Base:** Spring Boot `4.0.8` (Gestión de dependencias con Maven `./mvnw`).
+3. **Persistencia:** Spring Data JPA / Hibernate:
+   - **Desarrollo/Producción:** PostgreSQL (`jdbc:postgresql://localhost:5432/sistema_academico_own`).
+   - **Pruebas / Fallback:** H2 Database en memoria (`jdbc:h2:mem:testdb` en tests; consola web `/h2-console`).
+   - Inicialización automática vía `data.sql` (`defer-datasource-initialization=true`).
 4. **Seguridad:** Spring Security 6 con arquitectura **Dual `SecurityFilterChain`**:
    - `@Order(1)` para `/api/**`: **100% Stateless** autenticado mediante **JWT (JJWT `0.12.6`)** y `JwtAuthenticationFilter`.
    - `@Order(2)` para rutas web (`/**`): **Stateful** con sesiones HTTP y vistas SSR en Thymeleaf.
 5. **Productividad y Mapeo:**
    - **Lombok** para reducción de código repetitivo (`@Getter`, `@Setter`, `@Builder`, `@RequiredArgsConstructor`).
-   - **MapStruct (`1.6.3`)** + `lombok-mapstruct-binding` para generación de mappers en tiempo de compilación (`javac`).
+   - **MapStruct (`1.5.5.Final`)** + `lombok-mapstruct-binding` (`0.2.0`) para generación de mappers en tiempo de compilación (`javac`).
+6. **Despliegue y Contexto:**
+   - Empaquetado `war` (`ServletInitializer.java`).
+   - Context Path: `/springboot-app` en puerto `8081`.
 
 ---
 
@@ -27,12 +33,14 @@ Todo código nuevo debe ubicarse estrictamente dentro del paquete raíz `com.com
 | Paquete | Responsabilidad Permitida | Prohibición Estricta |
 | :--- | :--- | :--- |
 | `controller.mvc` | Controladores `@Controller` que retornan vistas Thymeleaf. | Prohibido retornar entidades o JSON crudo. |
-| `controller.rest` | Controladores `@RestController` bajo el prefijo `/api/v1/...`. | **Prohibido** inyectar `@Repository` directamente o exponer clases `@Entity` en firmas de métodos. |
-| `dto.<Modulo>` | Objetos de transferencia divididos en `*RequestDTO` (entrada) y `*ResponseDTO` (salida). | Prohibido incluir anotaciones JPA (`@Entity`, `@ManyToOne`) dentro de los DTOs. |
-| `mapper` | Interfaces `@Mapper(componentModel = "spring")` de MapStruct. | Prohibido usar librerías de reflexión en runtime como `ModelMapper` o mapeo manual repetitivo en el controlador. |
+| `controller.api` | Controladores `@RestController` bajo el prefijo `/api/v1/...`. | **Prohibido** inyectar `@Repository` directamente o exponer clases `@Entity` en firmas de métodos. |
+| `dtos.<Modulo>` | Objetos de transferencia divididos en `*RequestDTO` (entrada) y `*ResponseDTO` (salida). | Prohibido incluir anotaciones JPA (`@Entity`, `@ManyToOne`) dentro de los DTOs. |
+| `mappers` | Interfaces `@Mapper(componentModel = "spring")` de MapStruct. | Prohibido usar librerías de reflexión en runtime como `ModelMapper` o mapeo manual repetitivo en el controlador. |
 | `service` | Lógica de negocio, validaciones de dominio y orquestación de repositorios. | Prohibido acoplar clases web (`HttpServletRequest`, `ResponseEntity`) dentro de la capa de servicio. |
 | `repository` | Interfaces que extienden `JpaRepository<T, ID>`. | Prohibido escribir lógica de negocio en repositorios. |
 | `model` | Entidades JPA (`@Entity`) mapeadas al esquema relacional. | Prohibido devolverlas directamente al cliente HTTP sin pasar por un DTO. |
+| `security.jwt` | Filtro `JwtAuthenticationFilter` y utilidades de token JWT. | Prohibido deshabilitar la validación de tokens o alterar la cadena `@Order(1)`. |
+| `config` | Configuraciones de Spring (`SecurityConfig`, etc.). | Prohibido alterar la dualidad de `SecurityFilterChain` sin autorización expresa. |
 
 ---
 
