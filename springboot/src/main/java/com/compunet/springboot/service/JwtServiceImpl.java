@@ -66,6 +66,16 @@ public class JwtServiceImpl implements IJwtService {
     }
 
     @Override
+    public List<GrantedAuthority> getAuthorities(String token){
+        return extractClaims(token, claims -> {
+            List<String> authorities = claims.get("authorities", List.class);
+            return authorities.stream()
+                    .map(authority -> (GrantedAuthority) () -> authority)
+                    .toList();
+        });
+    }
+
+    @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
