@@ -1,4 +1,4 @@
-/* src/index.css — Estilos base ultraligeros */
+/* src/index.css */
 :root {
   --primary: #002855;
   --accent: #5454E9;
@@ -117,3 +117,59 @@ body {
 
 .status-loading { background: #e0f2fe; color: #0369a1; }
 .status-error { background: #fee2e2; color: #b91c1c; }
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.card-actions {
+  margin-top: 0.8rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card-detalle {
+  max-width: 600px;
+  margin-top: 1rem;
+}
+
+.card-destacado {
+  border: 2px solid var(--accent);
+  background: #f8faff;
+}
+
+.card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge-troncal {
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.banner-seleccion {
+  background: #e0f2fe;
+  border-left: 4px solid var(--accent);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.filtro-container {
+  margin-bottom: 1.5rem;
+}

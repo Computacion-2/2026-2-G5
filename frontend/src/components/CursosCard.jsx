@@ -11,7 +11,7 @@ function CursosCard ({curso}) {
             <p className="card-profesor">
                 <strong> Docente: </strong>{profesor}
             </p>
-            <div style={{marginTop: '0.8rem'}}>
+            <div className="card-actions">
                 <button className="btn btn-primary">Ver detalles</button>
             </div>
         </div>
