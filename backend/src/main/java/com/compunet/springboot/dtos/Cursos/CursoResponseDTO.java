@@ -17,5 +17,7 @@ public class CursoResponseDTO {
     private String departamento;
     private Long profesorId;
     private String profesorNombre;
+    private String profesorApellido;
+    private String profesorCorreo;
     private String profesorDepartamento;
 }

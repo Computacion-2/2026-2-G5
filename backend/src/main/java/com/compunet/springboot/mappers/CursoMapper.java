@@ -14,6 +14,8 @@ public interface CursoMapper {
 
     @Mapping(target = "profesorId", source = "profesor.id")
     @Mapping(target = "profesorNombre", source = "profesor.usuario.nombre")
+    @Mapping(target = "profesorApellido", source = "profesor.usuario.apellido")
+    @Mapping(target = "profesorCorreo", source = "profesor.usuario.correoInstitucional")
     @Mapping(target = "profesorDepartamento", source = "profesor.departamento")
     CursoResponseDTO toCursoResponseDTO(Curso curso);
 
